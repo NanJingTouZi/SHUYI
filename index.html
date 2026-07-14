@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -393,7 +393,7 @@ ul.trait-list li:last-child{border-bottom:none;}
 .risk-card.wealth.hit .rstatus{color:var(--gold-soft);}
 
 /* ============================================================
-   KESEIMBANGAN 5 ELEMEN - NEW DESIGN
+   KESEIMBANGAN 5 ELEMEN - FIXED ORDER & LABELS
    ============================================================ */
 .bal-grid{
   display:grid;
@@ -487,6 +487,75 @@ ul.trait-list li:last-child{border-bottom:none;}
   opacity:0.5;
 }
 
+/* ============================================================
+   RINGKASAN 13 ANGKA - 13 KOLOM STYLE (KONTEN DI DALAM PANEL)
+   ============================================================ */
+.summary-13-grid{
+  display:grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap:4px;
+  margin-bottom:14px;
+}
+@media (max-width:860px){
+  .summary-13-grid{
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+@media (max-width:540px){
+  .summary-13-grid{
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.summary-13-item{
+  text-align:center;
+  padding:4px 2px;
+}
+.summary-13-item .s-num-label{
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  color:var(--paper-dim);
+  opacity:0.5;
+  line-height:1.2;
+}
+.summary-13-item .s-num-box{
+  background:rgba(0,0,0,0.2);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:6px 2px;
+  margin-top:2px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;
+  font-weight:700;
+  color:var(--gold-soft);
+  letter-spacing:0.06em;
+}
+.summary-13-item.main-char .s-num-box{
+  border-color:var(--gold);
+  background:rgba(201,162,74,0.12);
+  color:var(--gold);
+}
+.summary-13-item .s-num-index{
+  font-size:7px;
+  color:var(--paper-dim);
+  opacity:0.3;
+  margin-top:2px;
+}
+.summary-info-row{
+  font-size:14px;
+  color:var(--paper-dim);
+  padding:12px 16px;
+  background:rgba(0,0,0,0.15);
+  border-radius:10px;
+  margin-top:4px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 12px;
+}
+.summary-info-row .highlight{color:var(--gold-soft);font-weight:600;}
+.summary-info-row .missing{color:#e0968a;font-weight:600;}
+.summary-info-row .separator{color:var(--paper-dim);opacity:0.4;}
+
 .print-bar{display:flex;justify-content:flex-end;margin:-10px 0 30px;}
 .print-btn{
   background:transparent;border:1px solid var(--gold);color:var(--gold-soft);
@@ -519,8 +588,8 @@ ul.trait-list li:last-child{border-bottom:none;}
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
     break-inside:avoid;page-break-inside:avoid;
   }
-  .profile-banner .name, .num-card .code, .year-num, .bal-num{color:#8a6a1f !important;}
-  .profile-banner .meta, .num-card .meaning, .panel, body, .rel-item, .swatch{color:#2a2a26 !important;}
+  .profile-banner .name, .num-card .code, .year-num, .bal-num, .summary-13-item .s-num-box{color:#8a6a1f !important;}
+  .profile-banner .meta, .num-card .meaning, .panel, body, .rel-item, .swatch, .summary-info-row{color:#2a2a26 !important;}
   .shio-badge .label{color:#3f6e5a !important;}
   .bal-col.bal-main{border-color:#8a6a1f !important;background:#f5f0e8 !important;}
   .bal-status.seimbang{background:#f0ebe0 !important;color:#8a6a1f !important;}
@@ -530,6 +599,7 @@ ul.trait-list li:last-child{border-bottom:none;}
   .grid-2{grid-template-columns:1fr 1fr;}
   .risk-grid{grid-template-columns:repeat(2,1fr);}
   .bal-grid{grid-template-columns:repeat(5,1fr);}
+  .summary-13-grid{grid-template-columns:repeat(13,1fr) !important;}
   a{color:inherit;text-decoration:none;}
 }
 
@@ -743,9 +813,6 @@ const RISK_DATA = {
   'Potensi Memiliki Kekayaan Yang Besar': ['156','516','336','663','369','639','696','966','999']
 };
 
-// ============================================================
-// RISK SCOPE - Mapping kategori ke row yang diperiksa (sesuai Excel)
-// ============================================================
 const RISK_SCOPE = {
   'Gabungan Angka Benturan API dan AIR': [1,2,3,4,5],
   'Potensi Menyebabkan Gagal Bisnis/Karir': [7,8],
@@ -979,7 +1046,7 @@ function renderHistory(filterText){
   }
   
   if(filtered.length === 0){
-    list.innerHTML = '<div class="history-empty">🔍 Tidak ditemukan nama "' + esc(filterText) + '"</div>';
+    list.innerHTML = '<div class="history-empty">🔍 Tidak ditemukan nama "' + esc(filter) + '"</div>';
     return;
   }
   
@@ -1096,8 +1163,8 @@ function computeProfile(dobStr, todayStr){
     {no:1, label:'DNA Ayah', code:'' + M8 + O8 + N9},
     {no:2, label:'DNA Ibu', code:'' + S8 + U8 + T9},
     {no:3, label:'Karakter Utama', code:'' + N9 + T9 + Q12},
-    {no:4, label:'Perjalanan Hidup (1)', code:'' + N9 + Q12 + U15},
-    {no:5, label:'Perjalanan Hidup (2)', code:'' + T9 + Q12 + M15},
+    {no:4, label:'P. Hidup(1)', code:'' + N9 + Q12 + U15},
+    {no:5, label:'P. Hidup(2)', code:'' + T9 + Q12 + M15},
     {no:6, label:'Anak', code:'' + M15 + U15 + Q17},
     {no:7, label:'Karir (1)', code:'' + M8 + N9 + O17},
     {no:8, label:'Karir (2)', code:'' + O8 + N9 + N17},
@@ -1119,7 +1186,7 @@ function computeProfile(dobStr, todayStr){
 
   var t = new Date(todayStr + 'T00:00:00');
   var cycleYear = t.getFullYear();
-  if(t.getMonth() === 9) cycleYear += 1;
+  if(t.getMonth() === 10) cycleYear += 1;
   var cyStr = String(cycleYear);
   var cyF = reduceDigit(parseInt(cyStr.substring(0,2),10));
   var cyL = reduceDigit(parseInt(cyStr.substring(2,4),10));
@@ -1132,7 +1199,7 @@ function computeProfile(dobStr, todayStr){
   var animalName = shio.shio.split(' ')[0];
   var relation = findRelation(animalName);
 
-  // Balance of 5 Elements
+  // Balance of 5 Elements - count all 16 numbers
   var elemMap = {1:'LOGAM',2:'AIR',3:'API',4:'KAYU',5:'TANAH',6:'LOGAM',7:'AIR',8:'API',9:'KAYU'};
   var allSixteen = [M8, O8, S8, U8, N9, T9, Q12, M15, U15, M17, N17, O17, Q17, S17, T17, U17];
   var balance = {LOGAM:0, AIR:0, API:0, KAYU:0, TANAH:0};
@@ -1142,8 +1209,9 @@ function computeProfile(dobStr, todayStr){
   }
 
   var mainElemKey = elemMap[Q12] || 'API';
-  var productionCycle = ['API', 'TANAH', 'LOGAM', 'AIR', 'KAYU'];
   
+  // Production cycle order starting from main element
+  var productionCycle = ['API', 'TANAH', 'LOGAM', 'AIR', 'KAYU'];
   var displayOrder = [];
   var startIdx = productionCycle.indexOf(mainElemKey);
   if(startIdx !== -1){
@@ -1155,13 +1223,17 @@ function computeProfile(dobStr, todayStr){
     displayOrder = productionCycle.slice();
   }
 
+  // Fixed category mapping by POSITION (1-5), NOT by element
   var categoryMap = {
-    'API': {label: 'Diri Sendiri', icon: '👤'},
-    'TANAH': {label: 'Anak / Uang', icon: '💰'},
-    'LOGAM': {label: 'Karir / Pasangan', icon: '💼'},
-    'AIR': {label: 'Politik / Kesehatan', icon: '🏛️'},
-    'KAYU': {label: 'Orang Tua / Pendukung', icon: '👨‍👩‍👦'}
+    0: {label: 'Diri Sendiri', icon: '👤'},
+    1: {label: 'Anak / Uang', icon: '💰'},
+    2: {label: 'Karir / Pasangan', icon: '💼'},
+    3: {label: 'Politik / Kesehatan', icon: '🏛️'},
+    4: {label: 'Orang Tua / Pendukung', icon: '👨‍👩‍👦'}
   };
+
+  // Fixed ideal values by POSITION (1-5)
+  var IDEAL_BY_POSITION = [4, 3, 3, 3, 3];
 
   return {
     day: day, month: month, year: year, 
@@ -1176,7 +1248,8 @@ function computeProfile(dobStr, todayStr){
     shio: shio, animalName: animalName, relation: relation,
     balance: balance, mainElemKey: mainElemKey, displayOrder: displayOrder,
     categoryMap: categoryMap, allSixteen: allSixteen,
-    basicCharacter: '' + N9 + T9 + Q12
+    basicCharacter: '' + N9 + T9 + Q12,
+    IDEAL_BY_POSITION: IDEAL_BY_POSITION
   };
 }
 
@@ -1283,6 +1356,62 @@ function render(name, dobDisplay, profile){
     if(DREAMS[i].no === profile.Q5){ dream = DREAMS[i]; break; }
   }
 
+  // --- ILUSTRASI PERHITUNGAN 13 ANGKA ---
+  var mainCharElem = elemByNo(profile.Q12);
+  var mainCharName = mainCharElem ? mainCharElem.nama : '—';
+  var mainCharDesc = mainCharElem ? mainCharElem.positif[0] : '';
+  var baseDigitsStr = profile.baseDigits.join(', ');
+  var missingStr = profile.missing.length ? profile.missing.join(', ') : 'Tidak ada';
+  
+  // 13 column labels
+  var colLabels = [
+    {no:1, label:'DNA AYAH'},
+    {no:2, label:'DNA IBU'},
+    {no:3, label:'KARAKTER UTAMA'},
+    {no:4, label:'P.HIDUP (1)'},
+    {no:5, label:'P.HIDUP (2)'},
+    {no:6, label:'ANAK'},
+    {no:7, label:'KARIR (1)'},
+    {no:8, label:'KARIR (2)'},
+    {no:9, label:'TEMAN'},
+    {no:10, label:'PERNIKAH (1)'},
+    {no:11, label:'PERNIKAH (2)'},
+    {no:12, label:'MASA DEPAN'},
+    {no:13, label:'ALAM BAWAH'}
+  ];
+  
+  // JUDUL + SUB JUDUL (di luar panel, seperti section lainnya)
+  var summaryHtml = '';
+  summaryHtml += '<div class="section-title">Ilustrasi Perhitungan 13 Angka <span class="cn">生命數組圖示</span></div>';
+  summaryHtml += '<div class="section-sub">13 set angka kehidupan yang dihitung dari tanggal lahir Anda (seperti format segitiga).</div>';
+  
+  // KONTEN DI DALAM PANEL
+  summaryHtml += '<div class="panel">';
+  
+  // 13 columns grid
+  summaryHtml += '<div class="summary-13-grid">';
+  for(var ci = 0; ci < profile.rows.length; ci++){
+    var r = profile.rows[ci];
+    var isMain = r.no === 3;
+    var label = colLabels[ci] ? colLabels[ci].label : '';
+    summaryHtml += '<div class="summary-13-item ' + (isMain ? 'main-char' : '') + '">';
+    summaryHtml += '<div class="s-num-label">' + label + '</div>';
+    summaryHtml += '<div class="s-num-box">' + esc(r.code) + '</div>';
+    summaryHtml += '<div class="s-num-index">#' + r.no + '</div>';
+    summaryHtml += '</div>';
+  }
+  summaryHtml += '</div>';
+  
+  // Info row: tanggal, angka dasar, karakter utama, angka hilang
+  summaryHtml += '<div class="summary-info-row">';
+  summaryHtml += '📅 <strong>Tanggal:</strong> ' + esc(dobDisplay) + ' → ';
+  summaryHtml += '<strong>Angka Dasar:</strong> ' + esc(baseDigitsStr) + ' → ';
+  summaryHtml += '<strong>Karakter Utama:</strong> <span class="highlight">' + profile.Q12 + '</span> | ';
+  summaryHtml += '<strong>Angka Hilang:</strong> <span class="missing">' + esc(missingStr) + '</span>';
+  summaryHtml += '</div>';
+  
+  summaryHtml += '</div>'; // end panel
+
   // Missing numbers
   var missingHtml = profile.missing.length
     ? profile.missing.map(function(n){ return '<span class="miss-num">' + n + '</span>'; }).join('')
@@ -1328,16 +1457,16 @@ function render(name, dobDisplay, profile){
   }
 
   // ============================================================
-  // KESEIMBANGAN 5 ELEMEN - NEW DESIGN (Card Style)
+  // KESEIMBANGAN 5 ELEMEN - FIXED ORDER & LABELS
   // ============================================================
   var elemNames = {'LOGAM':'Logam','AIR':'Air','API':'Api','KAYU':'Kayu','TANAH':'Tanah'};
   var elemIcons = {'LOGAM':'⚙','AIR':'💧','API':'🔥','KAYU':'🌳','TANAH':'🌍'};
-  var IDEAL_BY_POSITION = [4, 3, 3, 3, 3];
   
   var balanceHtml = '';
   var displayOrder = profile.displayOrder || ['API', 'TANAH', 'LOGAM', 'AIR', 'KAYU'];
   var mainElemKey = profile.mainElemKey || 'API';
   var categoryMap = profile.categoryMap || {};
+  var IDEAL_BY_POSITION = profile.IDEAL_BY_POSITION || [4, 3, 3, 3, 3];
   
   for(var di = 0; di < displayOrder.length; di++){
     var key = displayOrder[di];
@@ -1345,7 +1474,7 @@ function render(name, dobDisplay, profile){
     var ideal = IDEAL_BY_POSITION[di] || 3;
     var diff = val - ideal;
     var isMain = (key === mainElemKey);
-    var cat = categoryMap[key] || {label: key, icon: ''};
+    var cat = categoryMap[di] || {label: '—', icon: ''};
     
     // Determine status
     var statusClass = 'seimbang';
@@ -1445,6 +1574,9 @@ function render(name, dobDisplay, profile){
   fullHtml += '<div class="section-title">Lembar Kalkulasi <span class="cn">計算表</span></div>';
   fullHtml += '<div class="section-sub">Ilustrasi bagaimana angka-angka Anda saling terhubung — dari DNA orang tua hingga Karakter Utama yang ditonjolkan di tengah.</div>';
   fullHtml += '<div class="panel diagram-panel">' + buildCalcDiagram(profile, mainChar.nama) + '</div>';
+
+  // --- ILUSTRASI PERHITUNGAN 13 ANGKA (JUDUL DI LUAR, KONTEN DI DALAM PANEL) ---
+  fullHtml += summaryHtml;
 
   fullHtml += '<div class="section-title">Karakter Utama <span class="cn">主性格</span></div>';
   fullHtml += mainCharHtml;
